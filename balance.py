@@ -29,7 +29,7 @@ def load_page_data(page_index, url, response_handler=default_response_handler):
 def stream_pages(url: str):
     try:
         yield from takewhile(truth, map(partial(load_page_data, url=url), count(1)))
-    except Exception as e:
+    except requests.exceptions.HTTPError as e:
         logging.error(f"unexpected HTTP error: {e}")
         return {}
 
