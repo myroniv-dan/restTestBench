@@ -1,3 +1,4 @@
+import datetime
 import unittest
 
 import balance
@@ -9,16 +10,22 @@ PAGE = [
         "page": 1,
         "transactions": [
             {
-                "Date": "2013-12-22",
-                "Ledger": "Phone & Internet Expense",
-                "Amount": "-110.71",
-                "Company": "SHAW CABLESYSTEMS CALGARY AB",
+                "Date": "2013-12-19",
+                "Ledger": "Business Meals & Entertainment Expense",
+                "Amount": "-35.7",
+                "Company": "NESTERS MARKET #x0064 VANCOUVER BC",
             },
             {
                 "Date": "2013-12-21",
                 "Ledger": "Travel Expense, Nonlocal",
                 "Amount": "-8.1",
                 "Company": "BLACK TOP CABS VANCOUVER BC",
+            },
+            {
+                "Date": "2013-12-22",
+                "Ledger": "Phone & Internet Expense",
+                "Amount": "-110.71",
+                "Company": "SHAW CABLESYSTEMS CALGARY AB",
             },
             {
                 "Date": "2013-12-21",
@@ -62,12 +69,6 @@ PAGE = [
                 "Amount": "-10.99",
                 "Company": "DROPBOX xxxxxx8396 CA 9.99 USD @ xx1001",
             },
-            {
-                "Date": "2013-12-19",
-                "Ledger": "Business Meals & Entertainment Expense",
-                "Amount": "-35.7",
-                "Company": "NESTERS MARKET #x0064 VANCOUVER BC",
-            },
         ],
     }
 ]
@@ -87,12 +88,16 @@ RUNNING_DAILY_BALANCE = {
 }
 
 
+def format_date2balance(date2balance):
+    return {datetime.datetime.strptime(d, '%Y-%m-%d'): b for d, b in date2balance.items()}
+
+
 class TestTransactions(unittest.TestCase):
     def test_daily_balance_aggregator(self):
-        assert DATE_BALANCE == balance.make_daily_balance_aggregator()(PAGE)
+        assert format_date2balance(DATE_BALANCE) == balance.make_daily_balance_aggregator()(PAGE)
 
     def test_running_total_aggregator(self):
-        assert RUNNING_DAILY_BALANCE == balance.make_daily_balance_aggregator()(PAGE * 2)
+        assert format_date2balance(RUNNING_DAILY_BALANCE) == balance.make_daily_balance_aggregator()(PAGE * 2)
 
 
 if __name__ == "__main__":

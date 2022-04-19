@@ -1,3 +1,4 @@
+import datetime
 import logging
 import operator
 from collections import defaultdict
@@ -45,13 +46,14 @@ def display_date_balance(date2running_daily_balance: dict):
 
 
 def compute_running_daily_balance(date2balance: dict):
-    return dict(zip(date2balance.keys(), accumulate(date2balance.values(), operator.add)))
+    dates, balances = zip(*sorted(date2balance.items()))
+    return dict(zip(dates, accumulate(balances, operator.add)))
 
 
 def make_daily_balance_aggregator():
     def add_transaction_to_accumulator(transaction: dict):
         date, amount = itemgetter("Date", "Amount")(transaction)
-        date2balance[date] += float(amount)
+        date2balance[datetime.datetime.strptime(date, '%Y-%m-%d')] += float(amount)
 
     def aggregate_transactions(page):
         transactions = page["transactions"]
